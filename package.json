@@ -16,7 +16,7 @@
         "prettier": "^2.0.4"
     },
     "engines": {
-        "node": ">=14.13.0",
+        "node": ">=10.13.0",
         "npm": ">=6.4.1",
         "yarn": ">=1.9.4"
     },
@@ -40,18 +40,22 @@
     },
     "repository": "Christophe Coenraets/pwa-demo",
     "scripts": {
-        "build": "lwc-services build -m production -w scripts/webpack.config.js",
-        "build:development": "lwc-services build -w scripts/webpack.config.js",
-        "sniff": "lwc-services sniff -d sniff",
+        "build": "lwc-services --openssl-legacy-provider build -m production",
+        "build:development": "lwc-services --openssl-legacy-provider build",
         "lint": "eslint ./src/**/*.js",
+        "postinstall": "husky install",
+        "precommit": "npm run prettier:verify && [ $? -eq 0 ] && npm run lint",
         "prettier": "prettier --write \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
-        "serve": "node scripts/server.js",
+        "start": "node --openssl-legacy-provider scripts/server.js",
+        "start:api": "node --openssl-legacy-provider src/server/api.js",
+        "start:client": "node --openssl-legacy-provider scripts/server.js",
         "test:unit": "lwc-services test:unit",
         "test:unit:coverage": "lwc-services test:unit --coverage",
         "test:unit:debug": "lwc-services test:unit --debug",
         "test:unit:watch": "lwc-services test:unit --watch",
-        "watch": "lwc-services watch -w scripts/webpack.config.js",
-        "start": "node server"
+        "watch": "run-p watch:client watch:server",
+        "watch:client": "lwc-services watch",
+        "watch:server": "nodemon"
     }
 }
